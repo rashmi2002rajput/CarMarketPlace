@@ -1,18 +1,19 @@
-import Home from "./pages/home";
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-function App() {
-    // const [count, setCount] = useState(0)
-  return (
-    <div>
-      <Router>
-        <Routes>
-                  <Route path="/arpit" element={<Home />} />
+import { BrowserRouter as Router, Routes, Route , } from "react-router-dom";
+import Home from "./pages/home";
+import AuthPage from "./pages/Authpage";
+import DealerHome from "./pages/Dealer";
 
-        </Routes>
-      </Router>
-      <Home/>
-    </div>
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/DealerHome" element={<DealerHome />} />
+        
+      </Routes>
+    </Router>
   );
 }
 
