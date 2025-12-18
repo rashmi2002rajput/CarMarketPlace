@@ -1,40 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import AuthPage from "./Authpage";
 
 const Home = () => {
-  // 🔹 Dynamic States (future backend ready)
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
-  const [requests, setRequests] = useState([]);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authRole, setAuthRole] = useState("user");
+  const [startOnRegister, setStartOnRegister] = useState(false);
 
+  /* ===== REFS ===== */
+  const howItWorksRef = useRef(null);
+
+  /* ===== DATA ===== */
+  const categories = [
+    "Engine Parts",
+    "Brake System",
+    "Electrical",
+    "Suspension",
+    "Body Parts",
+    "Accessories",
+  ];
+
+  const steps = [
+    { title: "Search Parts", desc: "Find parts easily", icon: "🔍" },
+    { title: "Compare Dealers", desc: "Best offers", icon: "🤝" },
+    { title: "Buy or Request", desc: "Fast delivery", icon: "🚚" },
+  ];
+
+  /* ===== HANDLERS ===== */
+  const handleSearch = () => {
+    if (!search.trim()) {
+      alert("Please enter part name or category");
+      return;
+    }
+    alert(`Searching for: ${search}`);
+  };
+
+  const openLogin = () => {
+    setAuthRole("user");
+    setStartOnRegister(false);
+    setShowAuth(true);
+  };
+
+  const openDealer = () => {
+    setAuthRole("dealer");
+    setStartOnRegister(true);
+    setShowAuth(true);
+  };
+
+  const selectCategory = (cat) => {
+    setSearch(cat);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToHowItWorks = () => {
+    howItWorksRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  /* ===== STYLES ===== */
   const styles = {
-    page: {
-      fontFamily: "Segoe UI, sans-serif",
-      backgroundColor: "#f5f7fa",
-      minHeight: "100vh",
-    },
+    page: { fontFamily: "Segoe UI", background: "#f5f7fa" },
 
-    /* ---------- NAVBAR ---------- */
     navbar: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "15px 40px",
-      backgroundColor: "#0f172a",
+      padding: "14px 40px",
+      background: "#020617",
       color: "#fff",
       position: "sticky",
       top: 0,
-      zIndex: 10,
+      zIndex: 100,
     },
 
-    logo: {
-      fontSize: "1.6rem",
-      fontWeight: "bold",
+    navLeft: {
+      fontSize: "1.5rem",
       color: "#38bdf8",
+      fontWeight: 700,
     },
 
-    navActions: {
+    navRight: {
       display: "flex",
-      gap: "15px",
+      alignItems: "center",
+      gap: 18,
+    },
+
+    navLink: {
+      background: "transparent",
+      border: "none",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: 15,
     },
 
     navBtn: {
@@ -42,141 +101,172 @@ const Home = () => {
       borderRadius: "20px",
       border: "none",
       cursor: "pointer",
-      fontSize: "0.9rem",
+      background: "#38bdf8",
+      fontWeight: 600,
     },
 
-    loginBtn: {
-      backgroundColor: "#38bdf8",
-      color: "#000",
-    },
-
-    signupBtn: {
-      backgroundColor: "transparent",
-      color: "#fff",
-      border: "1px solid #38bdf8",
-    },
-
-    /* ---------- HERO ---------- */
     hero: {
-      padding: "90px 20px",
+      padding: "110px 20px",
       textAlign: "center",
       background:
         "linear-gradient(135deg, #020617, #0f172a, #020617)",
       color: "#fff",
     },
 
-    heroTitle: {
-      fontSize: "3.2rem",
-      marginBottom: "15px",
-    },
-
-    heroText: {
-      fontSize: "1.1rem",
-      maxWidth: "600px",
-      margin: "0 auto 30px",
-      opacity: 0.9,
-    },
-
     searchBox: {
-      padding: "14px 20px",
-      width: "320px",
+      padding: "15px 22px",
+      width: "340px",
       borderRadius: "30px",
       border: "none",
       outline: "none",
-      fontSize: "1rem",
     },
 
-    /* ---------- SECTION ---------- */
-    section: {
-      padding: "70px 40px",
+    heroBtns: {
+      marginTop: 20,
+      display: "flex",
+      gap: 14,
+      justifyContent: "center",
     },
 
-    sectionTitle: {
-      fontSize: "2.1rem",
-      textAlign: "center",
-      marginBottom: "40px",
-      color: "#020617",
+    secondaryBtn: {
+      padding: "10px 20px",
+      borderRadius: "20px",
+      background: "transparent",
+      border: "1px solid #38bdf8",
+      color: "#38bdf8",
+      cursor: "pointer",
     },
+
+    section: { padding: "70px 40px" },
 
     grid: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-      gap: "30px",
+      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+      gap: 25,
     },
 
     card: {
-      backgroundColor: "#fff",
-      padding: "25px",
-      borderRadius: "18px",
+      background: "#fff",
+      padding: 28,
+      borderRadius: 18,
+      textAlign: "center",
+      cursor: "pointer",
       boxShadow: "0 15px 30px rgba(0,0,0,0.08)",
-      transition: "0.3s",
     },
 
-    emptyCard: {
-      gridColumn: "1 / -1",
+    dealerBox: {
+      background: "linear-gradient(135deg,#4f46e5,#6366f1)",
+      color: "#fff",
+      padding: "70px 40px",
       textAlign: "center",
-      padding: "40px",
-      borderRadius: "18px",
-      backgroundColor: "#fff",
-      color: "#666",
+      borderRadius: 25,
+      margin: 40,
+    },
+
+    footer: {
+      background: "#020617",
+      color: "#cbd5f5",
+      padding: 30,
+      textAlign: "center",
     },
   };
 
   return (
     <div style={styles.page}>
-      {/* NAVBAR */}
+      {/* ===== NAVBAR ===== */}
       <nav style={styles.navbar}>
-        <div style={styles.logo}>CarMarketPlace</div>
+        <div style={styles.navLeft}>CarMarketPlace</div>
 
-        <div style={styles.navActions}>
+        <div style={styles.navRight}>
+          <button style={styles.navLink} onClick={scrollToHowItWorks}>
+            How It Works
+          </button>
+
           {!user && (
-            <>
-              <button style={{ ...styles.navBtn, ...styles.loginBtn }}>
-                Login
-              </button>
-              {/* <button style={{ ...styles.navBtn, ...styles.signupBtn }}>
-                Sign Up
-              </button> */}
-            </>
+            <button style={styles.navBtn} onClick={openLogin}>
+              Login / Register
+            </button>
           )}
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* ===== HERO ===== */}
       <section style={styles.hero}>
-        <h1 style={styles.heroTitle}>Find Auto Parts Instantly</h1>
-        <p style={styles.heroText}>
-          Request car parts and get offers from verified local dealers.
-        </p>
+        <h1>Find Genuine Auto Parts Instantly</h1>
+        <p>Search, compare and buy auto parts</p>
 
         <input
           style={styles.searchBox}
-          type="text"
-          placeholder="Search part name, car model..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search part, vehicle or OEM"
         />
-      </section>
 
-      {/* REQUESTS */}
-      <section style={styles.section}>
-        <h2 style={styles.sectionTitle}>Latest Part Requests</h2>
-
-        <div style={styles.grid}>
-          {requests.length === 0 ? (
-            <div style={styles.emptyCard}>
-              🚗 No requests yet. Be the first to request a part!
-            </div>
-          ) : (
-            requests.map((req) => (
-              <div style={styles.card} key={req.id}>
-                <h3>{req.partName}</h3>
-                <p>{req.carModel}</p>
-              </div>
-            ))
-          )}
+        <div style={styles.heroBtns}>
+          <button style={styles.navBtn} onClick={handleSearch}>
+            Search Parts
+          </button>
+          <button style={styles.secondaryBtn} onClick={openDealer}>
+            Become a Dealer
+          </button>
         </div>
       </section>
+
+      {/* ===== CATEGORIES ===== */}
+      <section style={styles.section}>
+        <h2 style={{ textAlign: "center" }}>Popular Categories</h2>
+        <div style={styles.grid}>
+          {categories.map((cat, i) => (
+            <div
+              key={i}
+              style={styles.card}
+              onClick={() => selectCategory(cat)}
+            >
+              🚗
+              <h3>{cat}</h3>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== HOW IT WORKS ===== */}
+      <section style={styles.section} ref={howItWorksRef}>
+        <h2 style={{ textAlign: "center" }}>How It Works</h2>
+        <div style={styles.grid}>
+          {steps.map((step, i) => (
+            <div style={styles.card} key={i}>
+              <div style={{ fontSize: "2rem" }}>{step.icon}</div>
+              <h3>{step.title}</h3>
+              <p>{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== DEALER CTA ===== */}
+      <div style={styles.dealerBox}>
+        <h2>Are You an Auto Parts Dealer?</h2>
+        <p>Grow your business online</p>
+        <button style={styles.navBtn} onClick={openDealer}>
+          Join as Dealer
+        </button>
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <footer style={styles.footer}>
+        © 2025 CarMarketPlace · All rights reserved
+      </footer>
+
+      {/* ===== AUTH MODAL ===== */}
+      {showAuth && (
+        <div className="modal-backdrop">
+          <AuthPage
+            role={authRole}
+            startOnRegister={startOnRegister}
+            onClose={() => setShowAuth(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };
